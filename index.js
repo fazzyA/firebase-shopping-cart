@@ -5,7 +5,7 @@ const appSettings = {
 }
 const app = initializeApp(appSettings)
 const database = getDatabase(app)
-const moviesDb = ref(database, "movies")
+const todoDB = ref(database, "todos")
 
 const inputField = document.getElementById('input-field');
 const buttonEl = document.getElementById('add-to-cart')
@@ -14,15 +14,18 @@ const shoppingList = document.getElementById('shopping-list')
 buttonEl.addEventListener("click", function () {
     console.log(inputField.value)
     let input = inputField.value;
-    push(moviesDb, input)
+    // push value in db
+    push(todoDB, input)
     // appenItemToShoppingList(input) 
     clearInputField()
 })
-onValue(moviesDb, function(snapshot){
+// after creation append item into our DOM HTML
+onValue(todoDB, function(snapshot){
     if(snapshot.exists()){
-        console.log('snapshot', Object.entries(snapshot.val()))
+        console.log('snapshot', snapshot.val(), Object.entries(snapshot.val()))
         clearShoppingList()
         const data = Object.entries(snapshot.val());
+        console.log("🚀 ~ file: index.js:27 ~ onValue ~ data:", data)
         const dataWithKey = Object.keys(snapshot.val());
         for(let i = 0; i < data.length; i++ ){
             let currentItem = data[i][1]
@@ -46,7 +49,7 @@ function appenItemToShoppingList(item) {
     newLi.textContent = itemValue
     newLi.addEventListener("dblclick", function(){
         console.log(itemId)
-        let locationToDelete = ref(database, `movies/${itemId}`)
+        let locationToDelete = ref(database, `todos/${itemId}`)
         remove(locationToDelete)
     })
     shoppingList.append(newLi)
