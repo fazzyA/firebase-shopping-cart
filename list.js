@@ -9,29 +9,7 @@ const app = initializeApp(appSettings)
 const database = getDatabase(app)
 export const todoDB = ref(database, "todos")
 
-const titleField = document.getElementById('title-field');
-const priceField = document.getElementById('price-field');
-const buttonEl = document.getElementById('add-to-cart');
-const shoppingList = document.getElementById('shopping-list');
-
-buttonEl.addEventListener("click", function () {
-  let title = titleField.value;
-  let price = priceField.value;
-
-  if (title && price) {
-    const newItemRef = push(todoDB);
-    const newItemKey = newItemRef.key;
-
-    // Use the key to set the data
-    set(ref(database, `todos/${newItemKey}`), {
-      title: title,
-      price: price
-    });
-    clearInputFields();
-  } else {
-    alert("Please enter both title and price.");
-  }
-});
+const shoppingList = document.getElementById('list');
 
 onValue(todoDB, function (snapshot) {
   if (snapshot.exists()) {
@@ -47,11 +25,6 @@ onValue(todoDB, function (snapshot) {
     shoppingList.innerHTML = `<li>No items to show...</li>`;
   }
 });
-
-function clearInputFields() {
-  titleField.value = "";
-  priceField.value = "";
-}
 
 function clearShoppingList() {
   shoppingList.innerHTML = "";
